@@ -1,0 +1,20 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - cyberhub-data:/data
+    ports:
+      - "127.0.0.1:3000:3000"
+  # HTTPS-сертификат автоматически. Замените домен в Caddyfile.
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+volumes:
+  cyberhub-data:
+  caddy-data:

@@ -1,0 +1,17 @@
+{
+  "name": "@cyberhub/server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --disable-warning=ExperimentalWarning src/index.js",
+    "start": "node --disable-warning=ExperimentalWarning src/index.js",
+    "seed": "node --disable-warning=ExperimentalWarning src/seed.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.5.0"
+  }
+}

@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/* Цветовая система: тёмная тема по умолчанию (клуб, вечерние смены), светлая — по настройке устройства или вручную */
+:root {
+  --bg: #0b0b12;
+  --surface: #13131d;
+  --surface-2: #1b1b28;
+  --surface-3: #242435;
+  --line: #2a2a3d;
+  --text: #ececf5;
+  --muted: #8d8daa;
+  --accent: #8b6cff;
+  --accent-2: #22d3ee;
+  --accent-ink: #ffffff;
+  --ok: #22c55e;
+  --warn: #f5a524;
+  --bad: #ff4d6d;
+  --glow: rgba(139, 108, 255, 0.35);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f5f5fa;
+    --surface: #ffffff;
+    --surface-2: #f0f0f7;
+    --surface-3: #e6e6f0;
+    --line: #e2e2ec;
+    --text: #15151f;
+    --muted: #6b6b85;
+    --accent: #6d4dff;
+    --accent-2: #0891b2;
+    --glow: rgba(109, 77, 255, 0.2);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f5f5fa;
+  --surface: #ffffff;
+  --surface-2: #f0f0f7;
+  --surface-3: #e6e6f0;
+  --line: #e2e2ec;
+  --text: #15151f;
+  --muted: #6b6b85;
+  --accent: #6d4dff;
+  --accent-2: #0891b2;
+  --glow: rgba(109, 77, 255, 0.2);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html, body, #root { min-height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+::selection { background: var(--glow); }
+
+.bg-hero {
+  background:
+    radial-gradient(1200px 400px at 10% -10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 60%),
+    radial-gradient(900px 400px at 110% 0%, color-mix(in srgb, var(--accent-2) 16%, transparent), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+.text-gradient {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--accent-2)));
+  box-shadow: 0 8px 24px -10px var(--glow), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+.pt-safe { padding-top: env(safe-area-inset-top); }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@keyframes sheet-in { from { transform: translateY(24px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+.anim-sheet { animation: sheet-in .22s cubic-bezier(.2,.8,.2,1); }
+.anim-fade { animation: fade-in .18s ease-out; }
+
+input[type="date"], input[type="time"], input[type="datetime-local"] { min-height: 44px; }
+input::-webkit-calendar-picker-indicator { filter: invert(var(--invert, 0.6)); }

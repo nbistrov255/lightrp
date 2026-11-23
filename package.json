@@ -1,0 +1,14 @@
+{
+  "name": "cyberhub-control",
+  "private": true,
+  "version": "0.1.0",
+  "description": "CyberHub Control — внутреннее приложение компьютерного клуба CyberHub (Рига)",
+  "workspaces": ["server", "client"],
+  "scripts": {
+    "dev": "npm run dev --workspace server & npm run dev --workspace client",
+    "build": "npm run build --workspace client",
+    "start": "npm run start --workspace server",
+    "seed": "npm run seed --workspace server"
+  },
+  "engines": { "node": ">=22.13" }
+}
