@@ -77,6 +77,7 @@ r.get('/dashboard', (req, res) => {
     },
     bookings: {
       new: get(`SELECT COUNT(*) AS n FROM bookings WHERE status = 'new'`).n,
+      oldestNew: get(`SELECT MIN(created_at) AS t FROM bookings WHERE status = 'new'`).t,
       latest: all(`SELECT id, name, date, time, guests, source, status FROM bookings WHERE status IN ('new','confirmed') ORDER BY id DESC LIMIT 4`),
     },
     breakdownsOpen: get(`SELECT COUNT(*) AS n FROM breakdowns WHERE status != 'fixed'`).n,

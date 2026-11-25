@@ -201,6 +201,12 @@ CREATE TABLE IF NOT EXISTS notifications (
 );
 CREATE INDEX IF NOT EXISTS notif_user ON notifications(user_id, read);
 
+-- Разовые напоминания (чтобы не слать одно и то же дважды, переживает пересинхронизацию смен)
+CREATE TABLE IF NOT EXISTS reminders_sent (
+  key TEXT PRIMARY KEY,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS settings (
   key TEXT PRIMARY KEY,
   value TEXT

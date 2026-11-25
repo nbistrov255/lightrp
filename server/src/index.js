@@ -15,6 +15,7 @@ import bookingRoutes from './routes/bookings.js';
 import miscRoutes from './routes/misc.js';
 import { startShiftsAutoSync } from './shiftsSync.js';
 import { requireAuth } from './auth.js';
+import { startShiftReminders } from './shiftReminders.js';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -50,4 +51,5 @@ app.use((err, _req, res, _next) => {
 app.listen(config.port, () => {
   console.log(`CyberHub Control: http://localhost:${config.port}`);
   startShiftsAutoSync();
+  startShiftReminders();
 });

@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { ClipboardCheck, ListChecks, CalendarClock, Wrench, Wallet, Star, ChevronRight, AlertTriangle, Clock, Inbox, CheckCircle2 } from 'lucide-react';
+import { ClipboardCheck, ListChecks, CalendarClock, Wrench, Wallet, Star, ChevronRight, AlertTriangle, Clock, Inbox, CheckCircle2, BellRing } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { useApi } from '../lib/hooks';
 import { Avatar, Badge, Button, Card, ErrorBox, SectionTitle, Spinner, Stat, cx } from '../components/ui';
 import { BOOKING_SOURCE, PRIORITY } from '../lib/meta';
-import { dateShort, dayLabel, deadlineLabel, isOverdue, plural } from '../lib/format';
+import { dateShort, dayLabel, deadlineLabel, isOverdue, plural, timeAgo } from '../lib/format';
 import type { Priority, Shift } from '../lib/api';
 
 interface Dash {
@@ -13,7 +13,7 @@ interface Dash {
   myNextShift: Shift | null;
   checklist: { id?: number; status: string; done: number; total: number };
   tasks: { active: number; overdue: number; review: number; top: { id: number; title: string; priority: Priority; deadline?: string; zone?: string; status: string; assignee_name?: string }[] };
-  bookings: { new: number; latest: { id: number; name?: string; date?: string; time?: string; guests?: string; source: string; status: string }[] };
+  bookings: { new: number; oldestNew: string | null; latest: { id: number; name?: string; date?: string; time?: string; guests?: string; source: string; status: string }[] };
   breakdownsOpen: number;
   breakdownsCritical: number;
   cashReportToday: boolean;
@@ -45,6 +45,24 @@ export default function Dashboard() {
         <p className="text-muted text-sm font-medium capitalize">{new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Riga' })}</p>
         <h1 className="text-[28px] md:text-4xl font-extrabold tracking-tight leading-tight">{greeting()}, {user?.name.split(' ')[0]} 👋</h1>
       </div>
+
+      {/* Новые брони — самое срочное: клиент ждёт ответа, даже если заявка пришла до открытия клуба */}
+      {d.bookings.new > 0 && (
+        <Card onClick={() => nav("/bookings")} className="mb-3 border-accent-2/40 bg-accent-2/5 shadow-[0_0_0_1px_var(--accent-2),0_10px_40px_-12px_color-mix(in_srgb,var(--accent-2)_45%,transparent)]">
+          <div className="flex items-center gap-3">
+            <span className="relative grid size-12 place-items-center rounded-2xl bg-accent-2/15 text-accent-2 shrink-0">
+              <BellRing className="size-6" />
+              <span className="absolute -top-1 -right-1 size-3 rounded-full bg-bad animate-ping" />
+              <span className="absolute -top-1 -right-1 size-3 rounded-full bg-bad" />
+            </span>
+            <div className="flex-1 min-w-0">
+              <div className="font-bold text-[17px]">{d.bookings.new} {plural(d.bookings.new, 'новая бронь ждёт', 'новые брони ждут', 'новых броней ждут')} ответа</div>
+              <div className="text-sm text-muted mt-0.5">{d.bookings.oldestNew ? `Первая пришла ${timeAgo(d.bookings.oldestNew)} · ` : ''}позвоните или подтвердите</div>
+            </div>
+            <ChevronRight className="size-5 text-muted" />
+          </div>
+        </Card>
+      )}
 
       {/* Главное действие: чек-лист начала смены */}
       {!isDirector || onShiftNow ? (
