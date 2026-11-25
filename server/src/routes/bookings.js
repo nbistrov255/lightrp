@@ -34,6 +34,17 @@ export function mapTildaFields(body) {
   return out;
 }
 
+/** Дата из формы Tilda («25.11.2026», «25/11/26», «2026-11-25») → единый вид ГГГГ-ММ-ДД, чтобы работали сортировка и «Сегодня/Завтра» */
+export function normalizeBookingDate(v) {
+  if (!v) return v;
+  const s = String(v).trim();
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (m) return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+  m = s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})$/);
+  if (m) return `${m[3].length === 2 ? '20' + m[3] : m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+  return s; // непонятный формат («в пятницу») сохраняем как есть
+}
+
 export function bookingDiscordPayload(b) {
   return {
     title: `📅 Новая бронь · ${SOURCE_LABEL[b.source] || b.source}`,
@@ -66,6 +77,7 @@ r.post('/integrations/tilda', express.urlencoded({ extended: true, limit: '200kb
 
   const clean = Object.fromEntries(Object.entries(data).filter(([k]) => !['token', 'formid', 'formname', 'tranid', 'COOKIES'].includes(k)));
   const f = mapTildaFields(clean);
+  f.date = normalizeBookingDate(f.date);
   const relaySent = body.discord_sent === true || body.discord_sent === '1' || body.discord_sent === 1;
   const b = { source: `tilda_${lang}`, ...f };
 

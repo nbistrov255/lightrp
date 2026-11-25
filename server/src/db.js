@@ -219,6 +219,10 @@ INSERT OR IGNORE INTO settings (key, value) VALUES
   ('shifts_last_sync', '');
 `);
 
+// Миграция: даты броней из Tilda «ДД.ММ.ГГГГ» → «ГГГГ-ММ-ДД» (новые нормализуются при приёме)
+db.exec(`UPDATE bookings SET date = substr(date,7,4) || '-' || substr(date,4,2) || '-' || substr(date,1,2)
+         WHERE date GLOB '[0-9][0-9].[0-9][0-9].[0-9][0-9][0-9][0-9]'`);
+
 // Небольшие помощники поверх node:sqlite
 export const all = (sql, ...p) => db.prepare(sql).all(...p);
 export const get = (sql, ...p) => db.prepare(sql).get(...p);
